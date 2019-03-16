@@ -1,6 +1,6 @@
 # Parallel_Backend
 
-##Socket.io
+## Socket.io
 
 ### getAllChat
 Server emit "getAllChat" when the client initial the connection
@@ -20,6 +20,7 @@ emit Chat
 |:---:|:---:|:---:|
 | username | string | username (max 20 characters) |
 | message | string | message of the chat (max 140 characters) |
+
 #### Object description
 ```
 {

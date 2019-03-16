@@ -16,6 +16,7 @@ return array of Chats
 ### addNewChat
 Server receive "addNewChat" from Client and emit it to all clients with "addNewChat"
 emit Chat
+
 | Body | Type | Value |
 |:---:|:---:|:---:|
 | username | string | username (max 20 characters) |

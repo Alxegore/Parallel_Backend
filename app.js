@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
         var username = msg.username
         var groupid = msg.groupid
         //delete one connection
-        Connection.OneAndDelete({ username: username, groupid: groupid }, function (err, connection) {
+        Connection.findOneAndDelete({ username: username, groupid: groupid }, function (err, connection) {
             if (err) return next(err);
             console.log('Deleted successfully!');
         })

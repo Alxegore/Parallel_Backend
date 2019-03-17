@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
         socket.emit('getAllChat', chat)
     })
     socket.on('addNewChat', function (msg) {
+        console.log('addNewChat')
         console.log(msg)
         var chat = new Chat(
             {
@@ -55,30 +56,46 @@ io.on('connection', (socket) => {
         io.sockets.emit('addNewChat', msg)
     });
     socket.on('invite', function (msg) {
+        console.log('invite')
+        console.log(msg)
         var userArray = msg.userArray
         var groupid = msg.groupid
+        //for user in userArray
         io.sockets.emit('invite', msg)
     })
     socket.on('leave', function (msg) {
+        console.log('leave')
+        console.log(msg)
         var username = msg.username
         var groupid = msg.groupid
+        //delete one connection
         io.sockets.emit('leave', msg)
     })
     socket.on('createGroup', function (msg) {
+        console.log('createGroup')
+        console.log(msg)
         var userArray = msg.userArray
+        //for user in userArray
         io.sockets.emit('createGroup', msg)
     })
     socket.on('joinGroup', function (msg) {
+        console.log('joinGroup')
+        console.log(msg)
         var username = msg.username
         var groupid = msg.groupid
+        //create one connection
         io.sockets.emit('joinGroup', msg)
     })
     socket.on('login', function (msg) {
+        console.log('login')
+        console.log(msg)
         var username = msg.username
         var password = msg.password
         // io.sockets.emit('login', msg)
     })
     socket.on('register', function (msg) {
+        console.log('register')
+        console.log(msg)
         var user = new User(
             {
                 username: msg.username,

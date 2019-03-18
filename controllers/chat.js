@@ -3,7 +3,6 @@ var User = require('../models/userModel');
 var Connection = require('../models/connectionModel');
 var Group = require('../models/groupModel');
 
-//Simple version, without validation or sanitation
 exports.test = function (req, res) {
     res.send('This is Parallel Backend jaa');
 };
@@ -83,40 +82,3 @@ exports.createGroup = function (req, res) {
         })
     })
 };
-
-// exports.chat_create = function (req, res) {
-//     var chat = new Chat(
-//         {
-//             name: req.body.name,
-//             price: req.body.price
-//         }
-//     );
-
-//     chat.save(function (err) {
-//         if (err) {
-//             return next(err);
-//         }
-//         res.send('Chat Created successfully')
-//     })
-// };
-
-// exports.chat_details = function (req, res) {
-//     Chat.findById(req.params.id, function (err, chat) {
-//         if (err) return next(err);
-//         res.send(chat);
-//     })
-// };
-
-// exports.chat_update = function (req, res) {
-//     Chat.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, chat) {
-//         if (err) return next(err);
-//         res.send('Chat udpated.');
-//     });
-// };
-
-// exports.chat_delete = function (req, res) {
-//     Chat.findByIdAndRemove(req.params.id, function (err) {
-//         if (err) return next(err);
-//         res.send('Deleted successfully!');
-//     })
-// };

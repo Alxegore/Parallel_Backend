@@ -38,11 +38,6 @@ app.use('/parallel', parallelRoute);
 const io = socketIo(server);
 io.on('connection', (socket) => {
     console.log("User connected")
-    Chat.find({}, function (err, chat) {
-        if (err) return next(err);
-        console.log(chat)
-        socket.emit('getAllChat', chat)
-    })
     socket.on('addNewChat', function (msg) {
         console.log('addNewChat')
         console.log(msg)
@@ -74,28 +69,28 @@ io.on('connection', (socket) => {
             io.sockets.emit('leave', msg)
         })
     })
-    socket.on('createGroup', function (msg) {
-        console.log('createGroup')
-        console.log(msg)
-        var userArray = msg.userArray
-        //for user in userArray
-        for (user in userArray) {
-            var connection = new Connection(
-                {
-                    username: user.username,
-                    userid: user.userid,
-                    groupid: msg.groupid,
-                }
-            );
-            connection.save(function (err) {
-                if (err) {
-                    return next(err);
-                }
-                io.sockets.emit('joinGroup', msg)
-            })
-        }
-        // io.sockets.emit('createGroup', msg)
-    })
+    // socket.on('createGroup', function (msg) {
+    //     console.log('createGroup')
+    //     console.log(msg)
+    //     var userArray = msg.userArray
+    //     //for user in userArray
+    //     for (user in userArray) {
+    //         var connection = new Connection(
+    //             {
+    //                 username: user.username,
+    //                 userid: user.userid,
+    //                 groupid: msg.groupid,
+    //             }
+    //         );
+    //         connection.save(function (err) {
+    //             if (err) {
+    //                 return next(err);
+    //             }
+    //             io.sockets.emit('joinGroup', msg)
+    //         })
+    //     }
+    //     // io.sockets.emit('createGroup', msg)
+    // })
     socket.on('joinGroup', function (msg) {
         console.log('joinGroup')
         console.log(msg)

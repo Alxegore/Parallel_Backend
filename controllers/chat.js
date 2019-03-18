@@ -1,5 +1,7 @@
 var Chat = require('../models/chat');
 var User = require('../models/userModel');
+var Connection = require('../models/connectionModel');
+var Group = require('../models/groupModel');
 
 //Simple version, without validation or sanitation
 exports.test = function (req, res) {
@@ -45,39 +47,76 @@ exports.login = function (req, res) {
     })
 };
 
-exports.chat_create = function (req, res) {
-    var chat = new Chat(
-        {
-            name: req.body.name,
-            price: req.body.price
-        }
-    );
-
-    chat.save(function (err) {
+exports.getChatByGroupID = function (req, res) {
+    Chat.find({ groupid: req.body.groupid }, function (err, chat) {
         if (err) {
+            res.status(200).send('Error');
             return next(err);
         }
-        res.send('Chat Created successfully')
+        res.status(200).send(chat);
     })
 };
 
-exports.chat_details = function (req, res) {
-    Chat.findById(req.params.id, function (err, chat) {
-        if (err) return next(err);
-        res.send(chat);
+exports.createGroup = function (req, res) {
+    var group = new Group(
+        {
+            creator: req.body.userid,
+            groupname: req.body.groupname,
+        }
+    );
+    group.save(function (err, groupRes) {
+        if (err) {
+            res.status(200).send('Error');
+        }
+        var connection = new Connection(
+            {
+                username: req.body.username,
+                userid: req.body.userid,
+                groupid: groupRes['id'],
+            }
+        );
+        connection.save(function (err, connectionRes) {
+            if (err) {
+                res.status(200).send('Error');
+            }
+            res.status(200).send(connectionRes);
+        })
     })
 };
 
-exports.chat_update = function (req, res) {
-    Chat.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, chat) {
-        if (err) return next(err);
-        res.send('Chat udpated.');
-    });
-};
+// exports.chat_create = function (req, res) {
+//     var chat = new Chat(
+//         {
+//             name: req.body.name,
+//             price: req.body.price
+//         }
+//     );
 
-exports.chat_delete = function (req, res) {
-    Chat.findByIdAndRemove(req.params.id, function (err) {
-        if (err) return next(err);
-        res.send('Deleted successfully!');
-    })
-};
+//     chat.save(function (err) {
+//         if (err) {
+//             return next(err);
+//         }
+//         res.send('Chat Created successfully')
+//     })
+// };
+
+// exports.chat_details = function (req, res) {
+//     Chat.findById(req.params.id, function (err, chat) {
+//         if (err) return next(err);
+//         res.send(chat);
+//     })
+// };
+
+// exports.chat_update = function (req, res) {
+//     Chat.findByIdAndUpdate(req.params.id, { $set: req.body }, function (err, chat) {
+//         if (err) return next(err);
+//         res.send('Chat udpated.');
+//     });
+// };
+
+// exports.chat_delete = function (req, res) {
+//     Chat.findByIdAndRemove(req.params.id, function (err) {
+//         if (err) return next(err);
+//         res.send('Deleted successfully!');
+//     })
+// };

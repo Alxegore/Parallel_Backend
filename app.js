@@ -7,7 +7,9 @@ const socketIo = require('socket.io');
 var Chat = require('./models/chat');
 var User = require('./models/userModel');
 var Connection = require('./models/connectionModel');
-var app = express();
+const app = express()
+const cors = require('cors')
+app.use(cors())
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
@@ -28,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // });
 
 const server = http.Server(app)
-server.listen(3000)
+server.listen(8000)
 
 var parallelRoute = require('./routes/route');
 app.use('/parallel', parallelRoute);
@@ -47,6 +49,7 @@ io.on('connection', (socket) => {
         var chat = new Chat(
             {
                 username: msg.username,
+                userid: msg.userid,
                 message: msg.message,
                 groupid: msg.groupid
             }
@@ -59,42 +62,48 @@ io.on('connection', (socket) => {
         })
         io.sockets.emit('addNewChat', msg)
     });
-    // socket.on('invite', function (msg) {
-    //     console.log('invite')
-    //     console.log(msg)
-    //     var userArray = msg.userArray
-    //     var groupid = msg.groupid
-    //     //for user in userArray
-    //     io.sockets.emit('invite', msg)
-    // })
     socket.on('leave', function (msg) {
         console.log('leave')
         console.log(msg)
         var username = msg.username
+        var userid = msg.userid
         var groupid = msg.groupid
         //delete one connection
-        Connection.findOneAndDelete({ username: username, groupid: groupid }, function (err, connection) {
+        Connection.findOneAndDelete({ username: username, userid: userid, groupid: groupid }, function (err, connection) {
             if (err) return next(err);
-            console.log('Deleted successfully!');
+            io.sockets.emit('leave', msg)
         })
-        io.sockets.emit('leave', msg)
     })
     socket.on('createGroup', function (msg) {
         console.log('createGroup')
         console.log(msg)
         var userArray = msg.userArray
         //for user in userArray
-        io.sockets.emit('createGroup', msg)
+        for (user in userArray) {
+            var connection = new Connection(
+                {
+                    username: user.username,
+                    userid: user.userid,
+                    groupid: msg.groupid,
+                }
+            );
+            connection.save(function (err) {
+                if (err) {
+                    return next(err);
+                }
+                io.sockets.emit('joinGroup', msg)
+            })
+        }
+        // io.sockets.emit('createGroup', msg)
     })
     socket.on('joinGroup', function (msg) {
         console.log('joinGroup')
         console.log(msg)
-        var username = msg.username
-        var groupid = msg.groupid
         //create one connection
         var connection = new Connection(
             {
                 username: msg.username,
+                userid: msg.userid,
                 groupid: msg.groupid,
             }
         );
@@ -102,32 +111,7 @@ io.on('connection', (socket) => {
             if (err) {
                 return next(err);
             }
-            console.log('User Created successfully')
+            io.sockets.emit('joinGroup', msg)
         })
-        io.sockets.emit('joinGroup', msg)
     })
-    // socket.on('login', function (msg) {
-    //     console.log('login')
-    //     console.log(msg)
-    //     var username = msg.username
-    //     var password = msg.password
-    //     // io.sockets.emit('login', msg)
-    // })
-    // socket.on('register', function (msg) {
-    //     console.log('register')
-    //     console.log(msg)
-    //     var user = new User(
-    //         {
-    //             username: msg.username,
-    //             password: msg.password,
-    //         }
-    //     );
-    //     user.save(function (err) {
-    //         if (err) {
-    //             return next(err);
-    //         }
-    //         console.log('User Created successfully')
-    //     })
-    //     // io.sockets.emit('register', msg)
-    // })
 })

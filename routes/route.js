@@ -10,13 +10,13 @@ router.get('/test', chatController.test);
 router.post('/register', chatController.register);
 router.post('/login', chatController.login);
 
-router.post('/create', chatController.chat_create);
+// router.post('/create', chatController.chat_create);
 
-router.get('/:id', chatController.chat_details);
+// router.get('/:id', chatController.chat_details);
 
-router.put('/:id/update', chatController.chat_update);
+// router.put('/:id/update', chatController.chat_update);
 
-router.delete('/:id/delete', chatController.chat_delete);
+// router.delete('/:id/delete', chatController.chat_delete);
 
 
 module.exports = router;

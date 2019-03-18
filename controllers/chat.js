@@ -82,3 +82,13 @@ exports.createGroup = function (req, res) {
         })
     })
 };
+
+exports.getAllUserInGroupID = function (req, res) {
+    Connection.find({ groupid: req.body.groupid }, function (err, connection) {
+        if (err) {
+            res.status(200).send('Error');
+            return next(err);
+        }
+        res.status(200).send(connection);
+    })
+}

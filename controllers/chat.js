@@ -33,9 +33,16 @@ exports.register = function (req, res) {
 };
 
 exports.login = function (req, res) {
-    var username = req.username
-    var password = req.password
-    res.status(200).send('Login Successful');
+    User.find({ username: req.body.username, password: req.body.password }, function (err, user) {
+        if (err) {
+            return next(err);
+        }
+        if (user.length == 0) {
+            res.status(200).send('Again Pls');
+        } else {
+            res.status(200).send(user[0]);
+        }
+    })
 };
 
 exports.chat_create = function (req, res) {

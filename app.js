@@ -21,7 +21,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-var port = 1234;
+// var port = 1234;
 
 // app.listen(port, () => {
 //     console.log('Server is up and running on port numner ' + port);
@@ -29,6 +29,10 @@ var port = 1234;
 
 const server = http.Server(app)
 server.listen(3000)
+
+var parallelRoute = require('./routes/route');
+app.use('/parallel', parallelRoute);
+
 const io = socketIo(server);
 io.on('connection', (socket) => {
     console.log("User connected")
@@ -55,14 +59,14 @@ io.on('connection', (socket) => {
         })
         io.sockets.emit('addNewChat', msg)
     });
-    socket.on('invite', function (msg) {
-        console.log('invite')
-        console.log(msg)
-        var userArray = msg.userArray
-        var groupid = msg.groupid
-        //for user in userArray
-        io.sockets.emit('invite', msg)
-    })
+    // socket.on('invite', function (msg) {
+    //     console.log('invite')
+    //     console.log(msg)
+    //     var userArray = msg.userArray
+    //     var groupid = msg.groupid
+    //     //for user in userArray
+    //     io.sockets.emit('invite', msg)
+    // })
     socket.on('leave', function (msg) {
         console.log('leave')
         console.log(msg)
@@ -88,30 +92,42 @@ io.on('connection', (socket) => {
         var username = msg.username
         var groupid = msg.groupid
         //create one connection
-        io.sockets.emit('joinGroup', msg)
-    })
-    socket.on('login', function (msg) {
-        console.log('login')
-        console.log(msg)
-        var username = msg.username
-        var password = msg.password
-        // io.sockets.emit('login', msg)
-    })
-    socket.on('register', function (msg) {
-        console.log('register')
-        console.log(msg)
-        var user = new User(
+        var connection = new Connection(
             {
                 username: msg.username,
-                password: msg.password,
+                groupid: msg.groupid,
             }
         );
-        user.save(function (err) {
+        connection.save(function (err) {
             if (err) {
                 return next(err);
             }
             console.log('User Created successfully')
         })
-        // io.sockets.emit('register', msg)
+        io.sockets.emit('joinGroup', msg)
     })
+    // socket.on('login', function (msg) {
+    //     console.log('login')
+    //     console.log(msg)
+    //     var username = msg.username
+    //     var password = msg.password
+    //     // io.sockets.emit('login', msg)
+    // })
+    // socket.on('register', function (msg) {
+    //     console.log('register')
+    //     console.log(msg)
+    //     var user = new User(
+    //         {
+    //             username: msg.username,
+    //             password: msg.password,
+    //         }
+    //     );
+    //     user.save(function (err) {
+    //         if (err) {
+    //             return next(err);
+    //         }
+    //         console.log('User Created successfully')
+    //     })
+    //     // io.sockets.emit('register', msg)
+    // })
 })

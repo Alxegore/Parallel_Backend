@@ -134,9 +134,13 @@ exports.getAllCurrentChat = async function (req, res) {
         console.log(connectionIndex)
         allGroup.push(connectionArray[connectionIndex]['groupid'])
         let chat = await Chat.find({ groupid: connectionArray[connectionIndex]['groupid'] })
+        var latestChat = chat[0]
         for (let chatData of chat) {
-            allChat.push(chatData);
+            if (chatData['logicalTime'] > latestChat['logicalTime']) {
+                latestChat = chatData
+            }
         }
+        allChat.push(latestChat)
     }
     res.status(200).send(allChat)
 };

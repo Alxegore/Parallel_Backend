@@ -23,12 +23,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// var port = 1234;
-
-// app.listen(port, () => {
-//     console.log('Server is up and running on port numner ' + port);
-// });
-
 const server = http.Server(app)
 server.listen(8000)
 
@@ -69,28 +63,6 @@ io.on('connection', (socket) => {
             io.sockets.emit('leave', msg)
         })
     })
-    // socket.on('createGroup', function (msg) {
-    //     console.log('createGroup')
-    //     console.log(msg)
-    //     var userArray = msg.userArray
-    //     //for user in userArray
-    //     for (user in userArray) {
-    //         var connection = new Connection(
-    //             {
-    //                 username: user.username,
-    //                 userid: user.userid,
-    //                 groupid: msg.groupid,
-    //             }
-    //         );
-    //         connection.save(function (err) {
-    //             if (err) {
-    //                 return next(err);
-    //             }
-    //             io.sockets.emit('joinGroup', msg)
-    //         })
-    //     }
-    //     // io.sockets.emit('createGroup', msg)
-    // })
     socket.on('joinGroup', function (msg) {
         console.log('joinGroup')
         console.log(msg)

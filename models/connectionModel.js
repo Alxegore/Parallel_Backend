@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var ConnectionSchema = new Schema({
     username: { type: String, required: true, max: 20 },
-    userid: { type: String, required: true, max: 30 },
+    userid: { type: Number, required: true },
     groupid: { type: Number, required: true },
 });
 

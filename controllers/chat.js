@@ -10,28 +10,31 @@ exports.test = function (req, res) {
 exports.register = async function (req, res) {
     // var x = await User.find({})
     // console.log("eq")
-    User.find({ username: req.body.username }, function (err, user) {
-        if (err) {
-            return next(err);
+    var userNameResult = await User.find({ username: req.body.username })
+    if (userNameResult.length == 0) {
+        var userResult = await User.find({})
+        var maxUserID = 0
+        for (var userData of userResult) {
+            if (userData['userid'] > maxUserID) {
+                maxUserID = userData['userid']
+            }
         }
-        console.log(user)
-        if (user.length == 0) {
-            var user = new User(
-                {
-                    username: req.body.username,
-                    password: req.body.password,
-                });
-            user.save(function (err, docsInserted) {
-                if (err) {
-                    res.status(200).send('Fail');
-                    console.log(err)
-                }
-                res.status(200).send(docsInserted);
-            })
-        } else {
-            res.status(200).send('This username has already existed');
-        }
-    })
+        var user = new User(
+            {
+                username: req.body.username,
+                password: req.body.password,
+                userid: maxUserID + 1
+            });
+        user.save(function (err, docsInserted) {
+            if (err) {
+                res.status(200).send('Fail');
+                console.log(err)
+            }
+            res.status(200).send(docsInserted);
+        })
+    } else {
+        res.status(200).send('This username has already existed');
+    }
 
 };
 

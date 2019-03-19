@@ -7,7 +7,9 @@ exports.test = function (req, res) {
     res.send('This is Parallel Backend jaa');
 };
 
-exports.register = function (req, res) {
+exports.register = async function (req, res) {
+    // var x = await User.find({})
+    // console.log("eq")
     User.find({ username: req.body.username }, function (err, user) {
         if (err) {
             return next(err);

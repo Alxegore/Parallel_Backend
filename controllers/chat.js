@@ -104,12 +104,12 @@ exports.createGroup = async function (req, res) {
                     logicalTime: 1234
                 }
             );
-            // chat.save(function (err) {
-            //     if (err) {
-            //         return next(err);
-            //     }
-            //     console.log('Chat Created successfully')
-            // })
+            chat.save(function (err) {
+                if (err) {
+                    return next(err);
+                }
+                console.log('Chat Created successfully')
+            })
             res.status(200).send(chat);
         })
     })

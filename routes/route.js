@@ -8,6 +8,7 @@ router.post('/register', chatController.register);
 router.post('/login', chatController.login);
 router.post('/getChatByGroupID', chatController.getChatByGroupID)
 router.post('/createGroup', chatController.createGroup)
-
+router.post('/getAllUserInGroupID', chatController.getAllUserInGroupID)
+router.post('/getAllCurrentChat', chatController.getAllCurrentChat)
 
 module.exports = router;

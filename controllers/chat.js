@@ -123,32 +123,20 @@ exports.getAllUserInGroupID = function (req, res) {
     })
 }
 
-exports.getAllCurrentChat = function (req, res) {
-    Connection.find({ userid: req.body.userid }, function (err, connectionArray) {
-        if (err) {
-            res.status(200).send('Error');
-            return next(err);
+exports.getAllCurrentChat = async function (req, res) {
+    let connectionArray = await Connection.find({ userid: req.body.userid })
+    let allGroup = []
+    let allChat = []
+    if (connectionArray.length == 0) {
+        res.status(200).send(allChat)
+    }
+    for (let connectionIndex in connectionArray) {
+        console.log(connectionIndex)
+        allGroup.push(connectionArray[connectionIndex]['groupid'])
+        let chat = await Chat.find({ groupid: connectionArray[connectionIndex]['groupid'] })
+        for (let chatData of chat) {
+            allChat.push(chatData);
         }
-        let allGroup = []
-        let allChat = []
-        if (connectionArray.length == 0) {
-            res.status(200).send(allChat)
-        }
-        for (let connectionIndex in connectionArray) {
-            console.log(connectionIndex)
-            allGroup.push(connectionArray[connectionIndex]['groupid'])
-            Chat.find({ groupid: connectionArray[connectionIndex]['groupid'] }, function (err, chat) {
-                if (err) {
-                    res.status(200).send('Error');
-                    return next(err);
-                }
-                for (let chatData of chat) {
-                    allChat.push(chatData);
-                }
-                if (connectionIndex == connectionArray.length - 1) {
-                    res.status(200).send(allChat)
-                }
-            })
-        }
-    })
+    }
+    res.status(200).send(allChat)
 };

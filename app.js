@@ -11,6 +11,8 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 
+var logicalTimes = 0;
+
 // Set up mongoose connection
 var mongoose = require('mongoose');
 const dev_db_url = 'mongodb+srv://admineq:admineq@parallel-fnvjs.mongodb.net/test?retryWrites=true';
@@ -35,12 +37,14 @@ io.on('connection', (socket) => {
     socket.on('addNewChat', function (msg) {
         console.log('addNewChat')
         console.log(msg)
+        logicalTimes += 1;
         var chat = new Chat(
             {
                 username: msg.username,
                 userid: msg.userid,
                 message: msg.message,
-                groupid: msg.groupid
+                groupid: msg.groupid,
+                logicalTime: logicalTimes
             }
         );
         chat.save(function (err) {
@@ -49,7 +53,7 @@ io.on('connection', (socket) => {
             }
             console.log('Chat Created successfully')
         })
-        io.sockets.emit('addNewChat', msg)
+        io.sockets.emit('addNewChat', chat)
     });
     socket.on('leave', function (msg) {
         console.log('leave')

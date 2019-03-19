@@ -78,7 +78,6 @@ io.on('connection', (socket) => {
                 return next(err);
             }
             if (group.length == 0) {
-
             } else {
                 var connection = new Connection(
                     {
@@ -95,7 +94,6 @@ io.on('connection', (socket) => {
                 })
                 Chat.find({ groupid: msg.groupid }, function (err, chat) {
                     if (err) {
-                        res.status(200).send('Error');
                         return next(err);
                     }
                     var latestChat = chat[0]

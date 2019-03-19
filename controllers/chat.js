@@ -88,8 +88,6 @@ exports.createGroup = async function (req, res) {
                 groupname: req.body.groupname,
             }
         );
-        console.log(groupRes)
-        console.log(connection)
         connection.save(function (err, connectionRes) {
             if (err) {
                 res.status(200).send('Error');
@@ -133,25 +131,20 @@ exports.getAllCurrentChat = function (req, res) {
         }
         let allGroup = []
         let allChat = []
-        // console.log(connectionArray)
         if (connectionArray.length == 0) {
             res.status(200).send(allChat)
         }
         for (let connectionIndex in connectionArray) {
             console.log(connectionIndex)
             allGroup.push(connectionArray[connectionIndex]['groupid'])
-            // console.log(connectionArray[connectionIndex]['groupid'])
             Chat.find({ groupid: connectionArray[connectionIndex]['groupid'] }, function (err, chat) {
                 if (err) {
                     res.status(200).send('Error');
                     return next(err);
                 }
                 for (let chatData of chat) {
-                    // console.log(chat[chatIndex])
                     allChat.push(chatData);
                 }
-                // console.log("eq" + connectionIndex)
-                // console.log(connectionArray.length)
                 if (connectionIndex == connectionArray.length - 1) {
                     res.status(200).send(allChat)
                 }

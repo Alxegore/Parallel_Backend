@@ -30,7 +30,9 @@ server.listen(8000)
 
 var parallelRoute = require('./routes/route');
 app.use('/parallel', parallelRoute);
-
+app.get('/',(req,res)=>{
+    return res.send('Hiiiii')
+})
 const io = socketIo(server);
 io.on('connection', (socket) => {
     console.log("User connected")

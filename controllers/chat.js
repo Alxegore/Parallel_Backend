@@ -117,6 +117,9 @@ exports.getAllCurrentChat = function (req, res) {
         let allGroup = []
         let allChat = []
         // console.log(connectionArray)
+        if (connectionArray.length == 0) {
+            res.status(200).send(allChat)
+        }
         for (let connectionIndex in connectionArray) {
             console.log(connectionIndex)
             allGroup.push(connectionArray[connectionIndex]['groupid'])

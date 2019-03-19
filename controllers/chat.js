@@ -96,7 +96,7 @@ exports.createGroup = async function (req, res) {
                 {
                     username: connectionRes['username'],
                     userid: connectionRes['userid'],
-                    message: "",
+                    message: " ",
                     groupid: connectionRes['groupid'],
                     groupname: connectionRes['groupname'],
                     logicalTime: 1234

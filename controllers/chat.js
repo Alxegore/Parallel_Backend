@@ -58,11 +58,19 @@ exports.getChatByGroupID = function (req, res) {
     })
 };
 
-exports.createGroup = function (req, res) {
+exports.createGroup = async function (req, res) {
+    var groupResult = await Group.find({})
+    var maxGroupID = 0
+    for (var groupData of groupResult) {
+        if (groupData['groupid'] > maxGroupID) {
+            maxGroupID = groupData['groupid']
+        }
+    }
     var group = new Group(
         {
             creator: req.body.userid,
             groupname: req.body.groupname,
+            groupid: maxGroupID + 1
         }
     );
     group.save(function (err, groupRes) {
@@ -73,7 +81,7 @@ exports.createGroup = function (req, res) {
             {
                 username: req.body.username,
                 userid: req.body.userid,
-                groupid: groupRes['id'],
+                groupid: groupRes['groupid'],
             }
         );
         console.log(groupRes)

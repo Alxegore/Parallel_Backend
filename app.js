@@ -11,6 +11,8 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 
+var logicalTimes = {};
+
 // Set up mongoose connection
 var mongoose = require('mongoose');
 const dev_db_url = 'mongodb+srv://admineq:admineq@parallel-fnvjs.mongodb.net/test?retryWrites=true';
@@ -24,7 +26,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // var port = 1234;
-
 // app.listen(port, () => {
 //     console.log('Server is up and running on port numner ' + port);
 // });
@@ -41,12 +42,18 @@ io.on('connection', (socket) => {
     socket.on('addNewChat', function (msg) {
         console.log('addNewChat')
         console.log(msg)
+        if(!(msg.groupid in key)){
+            logicalTimes[msg.groupid] = 0;
+        }
+        logicalTimes[msg.groupid] += 1;
         var chat = new Chat(
             {
                 username: msg.username,
                 userid: msg.userid,
                 message: msg.message,
-                groupid: msg.groupid
+                groupid: msg.groupid,
+                timestamp: Date(),
+                logicalTime: logicalTimes[msg.groupid]
             }
         );
         chat.save(function (err) {
@@ -55,7 +62,7 @@ io.on('connection', (socket) => {
             }
             console.log('Chat Created successfully')
         })
-        io.sockets.emit('addNewChat', msg)
+        io.sockets.emit('addNewChat', chat)
     });
     socket.on('leave', function (msg) {
         console.log('leave')

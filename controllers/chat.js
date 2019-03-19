@@ -135,8 +135,9 @@ exports.getAllCurrentChat = async function (req, res) {
         allGroup.push(connectionArray[connectionIndex]['groupid'])
         let chat = await Chat.find({ groupid: connectionArray[connectionIndex]['groupid'] })
         var latestChat = chat[0]
+        chat[0]['logicalTime'] = 0
         for (let chatData of chat) {
-            if (chatData['logicalTime'] > latestChat['logicalTime']) {
+            if (chatData['message'] != " " && chatData['logicalTime'] > latestChat['logicalTime']) {
                 latestChat = chatData
             }
         }

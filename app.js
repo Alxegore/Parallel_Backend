@@ -7,6 +7,7 @@ const socketIo = require('socket.io');
 var Chat = require('./models/chat');
 var User = require('./models/userModel');
 var Connection = require('./models/connectionModel');
+var Group = require('./models/groupModel');
 const app = express()
 const cors = require('cors')
 app.use(cors())
@@ -30,7 +31,7 @@ server.listen(8000)
 
 var parallelRoute = require('./routes/route');
 app.use('/parallel', parallelRoute);
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     return res.send('Hiiiii')
 })
 const io = socketIo(server);

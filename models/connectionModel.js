@@ -5,6 +5,7 @@ var ConnectionSchema = new Schema({
     username: { type: String, required: true, max: 20 },
     userid: { type: Number, required: true },
     groupid: { type: Number, required: true },
+    groupname: { type: String, required: true, max: 20 },
 });
 
 // Export the model

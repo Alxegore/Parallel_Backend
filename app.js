@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
                 userid: msg.userid,
                 message: msg.message,
                 groupid: msg.groupid,
+                groupname: msg.groupname,
                 logicalTime: logicalTimes
             }
         );
@@ -61,8 +62,9 @@ io.on('connection', (socket) => {
         var username = msg.username
         var userid = msg.userid
         var groupid = msg.groupid
+        var groupname = msg.groupname
         //delete one connection
-        Connection.findOneAndDelete({ username: username, userid: userid, groupid: groupid }, function (err, connection) {
+        Connection.findOneAndDelete({ username: username, userid: userid, groupid: groupid, groupname: groupname }, function (err, connection) {
             if (err) return next(err);
             io.sockets.emit('leave', msg)
         })
@@ -76,6 +78,7 @@ io.on('connection', (socket) => {
                 username: msg.username,
                 userid: msg.userid,
                 groupid: msg.groupid,
+                groupname: msg.groupname
             }
         );
         connection.save(function (err) {

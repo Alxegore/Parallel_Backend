@@ -85,6 +85,7 @@ exports.createGroup = async function (req, res) {
                 username: req.body.username,
                 userid: req.body.userid,
                 groupid: groupRes['groupid'],
+                groupname: req.body.groupname,
             }
         );
         console.log(groupRes)
@@ -93,7 +94,23 @@ exports.createGroup = async function (req, res) {
             if (err) {
                 res.status(200).send('Error');
             }
-            res.status(200).send(connectionRes);
+            var chat = new Chat(
+                {
+                    username: connectionRes['username'],
+                    userid: connectionRes['userid'],
+                    message: "",
+                    groupid: connectionRes['groupid'],
+                    groupname: connectionRes['groupname'],
+                    logicalTime: 1234
+                }
+            );
+            // chat.save(function (err) {
+            //     if (err) {
+            //         return next(err);
+            //     }
+            //     console.log('Chat Created successfully')
+            // })
+            res.status(200).send(chat);
         })
     })
 };

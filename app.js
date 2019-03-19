@@ -73,32 +73,41 @@ io.on('connection', (socket) => {
         console.log('joinGroup')
         console.log(msg)
         //create one connection
-        var connection = new Connection(
-            {
-                username: msg.username,
-                userid: msg.userid,
-                groupid: msg.groupid,
-                groupname: msg.groupname
-            }
-        );
-        connection.save(function (err) {
+        Group.find({ groupid: msg.groupid }, function (err, group) {
             if (err) {
                 return next(err);
             }
-        })
-        Chat.find({ groupid: msg.groupid }, function (err, chat) {
-            if (err) {
-                res.status(200).send('Error');
-                return next(err);
+            if (group.length == 0) {
+
+            } else {
+                var connection = new Connection(
+                    {
+                        username: msg.username,
+                        userid: msg.userid,
+                        groupid: msg.groupid,
+                        groupname: group[0]['groupname']
+                    }
+                );
+                connection.save(function (err) {
+                    if (err) {
+                        return next(err);
+                    }
+                })
+                Chat.find({ groupid: msg.groupid }, function (err, chat) {
+                    if (err) {
+                        res.status(200).send('Error');
+                        return next(err);
+                    }
+                    var latestChat = chat[0]
+                    for (chatData of chat) {
+                        if (chatData['logicalTime'] > latestChat['logicalTime']) {
+                            latestChat = chatData
+                        }
+                    }
+                    io.sockets.emit('joinGroupChat', latestChat)
+                })
+                io.sockets.emit('joinGroup', msg)
             }
-            var latestChat = chat[0]
-            for (chatData of chat) {
-                if (chatData['logicalTime'] > latestChat['logicalTime']) {
-                    latestChat = chatData
-                }
-            }
-            io.sockets.emit('joinGroupChat', latestChat)
         })
-        io.sockets.emit('joinGroup', msg)
     })
 })

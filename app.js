@@ -11,7 +11,7 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 
-var logicalTimes = {};
+var logicalTimes = 0;
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
@@ -42,18 +42,14 @@ io.on('connection', (socket) => {
     socket.on('addNewChat', function (msg) {
         console.log('addNewChat')
         console.log(msg)
-        if(!(msg.groupid in key)){
-            logicalTimes[msg.groupid] = 0;
-        }
-        logicalTimes[msg.groupid] += 1;
+        logicalTimes += 1;
         var chat = new Chat(
             {
                 username: msg.username,
                 userid: msg.userid,
                 message: msg.message,
                 groupid: msg.groupid,
-                timestamp: Date(),
-                logicalTime: logicalTimes[msg.groupid]
+                logicalTime: logicalTimes
             }
         );
         chat.save(function (err) {
@@ -76,28 +72,6 @@ io.on('connection', (socket) => {
             io.sockets.emit('leave', msg)
         })
     })
-    // socket.on('createGroup', function (msg) {
-    //     console.log('createGroup')
-    //     console.log(msg)
-    //     var userArray = msg.userArray
-    //     //for user in userArray
-    //     for (user in userArray) {
-    //         var connection = new Connection(
-    //             {
-    //                 username: user.username,
-    //                 userid: user.userid,
-    //                 groupid: msg.groupid,
-    //             }
-    //         );
-    //         connection.save(function (err) {
-    //             if (err) {
-    //                 return next(err);
-    //             }
-    //             io.sockets.emit('joinGroup', msg)
-    //         })
-    //     }
-    //     // io.sockets.emit('createGroup', msg)
-    // })
     socket.on('joinGroup', function (msg) {
         console.log('joinGroup')
         console.log(msg)

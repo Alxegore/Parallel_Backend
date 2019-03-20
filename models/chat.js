@@ -7,7 +7,8 @@ var ChatSchema = new Schema({
     message: { type: String, required: true, max: 140 },
     groupid: { type: Number, required: true },
     groupname: { type: String, required: true, max: 20 },
-    logicalTime: { type: Number, required: true }
+    logicalTime: { type: Number, required: true },
+    timestamp: { type: Number, required: true }
 });
 
 // Export the model

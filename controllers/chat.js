@@ -128,7 +128,7 @@ exports.getAllCurrentChat = async function (req, res) {
     let allGroup = []
     let allChat = []
     if (connectionArray.length == 0) {
-        res.status(200).send(allChat)
+        return res.status(200).send(allChat)
     }
     for (let connectionIndex in connectionArray) {
         console.log(connectionIndex)
@@ -145,5 +145,5 @@ exports.getAllCurrentChat = async function (req, res) {
         }
         allChat.push(latestChat)
     }
-    res.status(200).send(allChat)
+    return res.status(200).send(allChat)
 };

@@ -99,7 +99,8 @@ exports.createGroup = async function (req, res) {
                     message: " ",
                     groupid: connectionRes['groupid'],
                     groupname: connectionRes['groupname'],
-                    logicalTime: 1234
+                    logicalTime: 0,
+                    timestamp: new Date().getTime()
                 }
             );
             chat.save(function (err) {

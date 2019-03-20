@@ -102,8 +102,11 @@ io.on('connection', (socket) => {
                         return next(err);
                     }
                     var latestChat = chat[0]
+                    if (latestChat['message'] === " ") {
+                        latestChat['logicalTime'] = 0
+                    }
                     for (chatData of chat) {
-                        if (chatData['logicalTime'] > latestChat['logicalTime']) {
+                        if (chatData['message'] != " " && chatData['logicalTime'] > latestChat['logicalTime']) {
                             latestChat = chatData
                         }
                     }

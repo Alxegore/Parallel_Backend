@@ -12,8 +12,9 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 
-var logicalTimes = 0;
+var globalLogicalTime = 0;
 
+const logicalTime = require('./models/logicalTime');
 // Set up mongoose connection
 var mongoose = require('mongoose');
 const dev_db_url = 'mongodb+srv://admineq:admineq@parallel-fnvjs.mongodb.net/test?retryWrites=true';
@@ -37,10 +38,10 @@ app.get('/', (req, res) => {
 const io = socketIo(server);
 io.on('connection', (socket) => {
     console.log("User connected")
-    socket.on('addNewChat', function (msg) {
+    socket.on('addNewChat', async function (msg) {
         console.log('addNewChat')
         console.log(msg)
-        logicalTimes += 1;
+        await getLogicalTime();
         Group.find({ groupid: msg.groupid }, function (err, group) {
             var chat = new Chat(
                 {
@@ -49,7 +50,8 @@ io.on('connection', (socket) => {
                     message: msg.message,
                     groupid: msg.groupid,
                     groupname: group[0]['groupname'],
-                    logicalTime: logicalTimes
+                    logicalTime: globalLogicalTime,
+                    timestamp: new Date().getTime()
                 }
             );
             chat.save(function (err) {
@@ -117,3 +119,13 @@ io.on('connection', (socket) => {
         })
     })
 })
+
+async function updateLogicalTime(){
+    await logicalTime.updateOne({logicalTime: globalLogicalTime});
+}
+
+async function getLogicalTime(){
+    var query = await logicalTime.findOne()
+    globalLogicalTime = query.logicalTime + 1;
+    await updateLogicalTime()
+}

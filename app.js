@@ -120,12 +120,12 @@ io.on('connection', (socket) => {
     })
 })
 
-async function updateLogicalTime(){
-    await logicalTime.updateOne({logicalTime: globalLogicalTime});
-}
-
 async function getLogicalTime(){
-    var query = await logicalTime.findOne()
-    globalLogicalTime = query.logicalTime + 1;
-    await updateLogicalTime()
+    var query = await logicalTime.findOneAndUpdate(
+        {}, 
+        { 
+           $inc: { logicalTime: 1 } 
+        }, {new: true })
+    globalLogicalTime = query.logicalTime
+    // console.log(globalLogicalTime)
 }

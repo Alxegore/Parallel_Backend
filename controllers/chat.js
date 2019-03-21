@@ -131,20 +131,24 @@ exports.getAllCurrentChat = async function (req, res) {
     if (connectionArray.length == 0) {
         return res.status(200).send(allChat)
     }
+    console.log(connectionArray)
     for (let connectionIndex in connectionArray) {
         console.log(connectionIndex)
         allGroup.push(connectionArray[connectionIndex]['groupid'])
         let chat = await Chat.find({ groupid: connectionArray[connectionIndex]['groupid'] })
-        var latestChat = chat[0]
-        if (chat[0]['message'] === " ") {
-            latestChat['logicalTime'] = 0
-        }
-        for (let chatData of chat) {
-            if (chatData['message'] != " " && chatData['logicalTime'] > latestChat['logicalTime']) {
-                latestChat = chatData
+        console.log(chat)
+        if (chat.length != 0) {
+            var latestChat = chat[0]
+            if (chat[0]['message'] === " ") {
+                latestChat['logicalTime'] = 0
             }
+            for (let chatData of chat) {
+                if (chatData['message'] != " " && chatData['logicalTime'] > latestChat['logicalTime']) {
+                    latestChat = chatData
+                }
+            }
+            allChat.push(latestChat)
         }
-        allChat.push(latestChat)
     }
     return res.status(200).send(allChat)
 };

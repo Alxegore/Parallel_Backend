@@ -58,7 +58,7 @@ io.on("connection", socket => {
       }
       console.log("Chat Created successfully");
     });
-    io.sockets.emit("addNewChat", chat);
+    io.emit("addNewChat", chat);
   });
   socket.on("leave", function(msg) {
     console.log("leave");
@@ -77,7 +77,7 @@ io.on("connection", socket => {
       },
       function(err, connection) {
         if (err) return next(err);
-        io.sockets.emit("leave", msg);
+        io.emit("leave", msg);
       }
     );
   });
@@ -122,9 +122,9 @@ io.on("connection", socket => {
           latestChat = { ...latestChat._doc };
           latestChat["joinuserid"] = msg.userid;
           console.log(latestChat);
-          io.sockets.emit("joinGroupChat", latestChat);
+          io.emit("joinGroupChat", latestChat);
         });
-        io.sockets.emit("joinGroup", msg);
+        io.emit("joinGroup", msg);
       }
     });
   });

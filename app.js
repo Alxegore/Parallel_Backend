@@ -42,26 +42,24 @@ io.on('connection', (socket) => {
         console.log('addNewChat')
         console.log(msg)
         await getLogicalTime();
-        Group.find({ groupid: msg.groupid }, function (err, group) {
-            var chat = new Chat(
-                {
-                    username: msg.username,
-                    userid: msg.userid,
-                    message: msg.message,
-                    groupid: msg.groupid,
-                    groupname: group[0]['groupname'],
-                    logicalTime: globalLogicalTime,
-                    timestamp: new Date().getTime()
-                }
-            );
-            chat.save(function (err) {
-                if (err) {
-                    return next(err);
-                }
-                console.log('Chat Created successfully')
-            })
-            io.sockets.emit('addNewChat', chat)
+        var chat = new Chat(
+            {
+                username: msg.username,
+                userid: msg.userid,
+                message: msg.message,
+                groupid: msg.groupid,
+                groupname: msg.groupname,
+                logicalTime: globalLogicalTime,
+                timestamp: new Date().getTime()
+            }
+        );
+        chat.save(function (err) {
+            if (err) {
+                return next(err);
+            }
+            console.log('Chat Created successfully')
         })
+        io.sockets.emit('addNewChat', chat)
     });
     socket.on('leave', function (msg) {
         console.log('leave')
@@ -120,12 +118,12 @@ io.on('connection', (socket) => {
     })
 })
 
-async function getLogicalTime(){
+async function getLogicalTime() {
     var query = await logicalTime.findOneAndUpdate(
-        {}, 
-        { 
-           $inc: { logicalTime: 1 } 
-        }, {new: true })
+        {},
+        {
+            $inc: { logicalTime: 1 }
+        }, { new: true })
     globalLogicalTime = query.logicalTime
     // console.log(globalLogicalTime)
 }

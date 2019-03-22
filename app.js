@@ -110,7 +110,7 @@ io.on('connection', (socket) => {
                             latestChat = chatData
                         }
                     }
-                    latestChat['joinuserid'] = msg.username
+                    latestChat['joinuserid'] = msg.userid
                     io.sockets.emit('joinGroupChat', latestChat)
                 })
                 io.sockets.emit('joinGroup', msg)
